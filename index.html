@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أبيض أسود — ABYADH ASWAD</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Reem+Kufi:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:      #243A5E;
+    --ink:     #e0f2fe;
+    --dim:     #8FB6D8;
+    --line:    rgba(224,242,254,0.18);
+    --panel:   rgba(224,242,254,0.04);
+    --accent:  #0077b6;
+    --accent2: #90e0ef;
+  }
+
+  body.abyadh {
+    --bg:      #EDF4FA;
+    --ink:     #243A5E;
+    --dim:     #5F86A6;
+    --line:    rgba(36,58,94,0.18);
+    --panel:   rgba(36,58,94,0.04);
+    --accent:  #0077b6;
+    --accent2: #8FB6D8;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  html { scroll-behavior:smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Space Mono', monospace;
+    overflow-x: hidden;
+    transition: background .6s ease, color .6s ease;
+  }
+
+  /* ===== FILM GRAIN + SCANLINES ===== */
+  .grain, .scan {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 900;
+  }
+  .grain {
+    opacity: .16;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation: grainshift .4s steps(2) infinite;
+    mix-blend-mode: overlay;
+  }
+  @keyframes grainshift {
+    0%   { transform: translate(0,0); }
+    50%  { transform: translate(-3%,2%); }
+    100% { transform: translate(2%,-2%); }
+  }
+  .scan {
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(36,58,94,0.12) 0px, rgba(36,58,94,0.12) 1px,
+      transparent 1px, transparent 4px
+    );
+    opacity: .4;
+  }
+
+  /* ===== GATE ===== */
+  .gate {
+    position: fixed; inset: 0;
+    background: linear-gradient(180deg, #243A5E 0%, #16263f 100%);
+    color: #EDF4FA;
+    z-index: 1000;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 1.4rem;
+    cursor: pointer;
+    transition: opacity .8s ease, visibility .8s;
+  }
+  .gate.gone { opacity:0; visibility:hidden; }
+  .gate-ar {
+    font-family: 'Reem Kufi', sans-serif;
+    font-size: clamp(2.6rem, 11vw, 6rem);
+    letter-spacing: .05em;
+    line-height: 1;
+  }
+  .gate-hint {
+    font-size: .65rem;
+    letter-spacing: .45em;
+    text-transform: uppercase;
+    color: #8FB6D8;
+    animation: blink 2.2s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:.25} 50%{opacity:1} }
+
+  /* ===== TOP BAR ===== */
+  .topbar {
+    position: sticky; top: 0;
+    z-index: 800;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: .8rem 1.2rem;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
+    transition: background .6s ease;
+  }
+  .brand {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.05rem;
+    letter-spacing: .3em;
+  }
+  .mode-switch { display:flex; border:1px solid var(--line); }
+  .mode-switch button {
+    font-family: 'Space Mono', monospace;
+    font-size: .6rem;
+    letter-spacing: .2em;
+    padding: .45rem .8rem;
+    background: transparent;
+    color: var(--dim);
+    border: none;
+    cursor: pointer;
+    transition: all .3s;
+  }
+  .mode-switch button.on { background: var(--ink); color: var(--bg); }
+
+  /* ===== HERO ===== */
+  .hero {
+    padding: clamp(3rem,9vw,7rem) 1.2rem 2rem;
+    text-align: center;
+    position: relative;
+  }
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3.6rem, 17vw, 11rem);
+    line-height: .82;
+    letter-spacing: -.01em;
+    position: relative;
+    display: inline-block;
+  }
+  .hero h1 span.split {
+    display: block;
+  }
+  .hero h1 .ghost {
+    position: absolute;
+    inset: 0;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--accent);
+    transform: translate(6px, 6px);
+    z-index: -1;
+    animation: drift 6s ease-in-out infinite;
+  }
+  @keyframes drift {
+    0%,100% { transform: translate(6px,6px); }
+    50%     { transform: translate(-6px,-4px); }
+  }
+  .hero-ar {
+    font-family: 'Reem Kufi', sans-serif;
+    font-size: clamp(1.6rem,6vw,3rem);
+    margin-top: .6rem;
+    color: var(--dim);
+  }
+  .hero-meta {
+    margin-top: 1.6rem;
+    font-size: .62rem;
+    letter-spacing: .35em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+
+  /* ===== MARQUEE ===== */
+  .marquee {
+    overflow: hidden;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: .7rem 0;
+    white-space: nowrap;
+    margin: 2.4rem 0;
+  }
+  .marquee-track {
+    display: inline-block;
+    animation: slide 26s linear infinite;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: .28em;
+  }
+  .marquee-track em {
+    font-family: 'Reem Kufi', sans-serif;
+    font-style: normal;
+    color: var(--accent);
+    padding: 0 .4rem;
+  }
+  @keyframes slide {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  /* ===== PLAYER ===== */
+  .player {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0 1.2rem;
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: clamp(1.5rem,5vw,3.5rem);
+    align-items: center;
+  }
+
+  .vinyl-wrap { position: relative; }
+  .vinyl {
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background:
+      repeating-radial-gradient(circle at 50% 50%,
+        rgba(224,242,254,0.05) 0 1px,
+        transparent 1px 4px),
+      radial-gradient(circle at 50% 50%, #2f4a72 0 28%, #16263f 28% 100%);
+    border: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 30px 60px rgba(20,35,60,.5);
+    animation: spin 4s linear infinite;
+    animation-play-state: paused;
+    cursor: pointer;
+  }
+  .vinyl.playing { animation-play-state: running; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .label {
+    width: 42%; aspect-ratio:1;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #EDF4FA;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    text-align:center;
+    font-family: 'Reem Kufi', sans-serif;
+    font-size: 1.1rem;
+    line-height:1.1;
+  }
+  .label small {
+    font-family:'Space Mono',monospace;
+    font-size:.45rem;
+    letter-spacing:.2em;
+    margin-top:.3rem;
+    opacity:.75;
+  }
+  .vinyl::after {
+    content:'';
+    position:absolute;
+    width:8px; height:8px;
+    border-radius:50%;
+    background: var(--bg);
+    top:50%; left:50%;
+    transform: translate(-50%,-50%);
+  }
+
+  .now-playing .tag {
+    font-size:.58rem; letter-spacing:.4em;
+    text-transform:uppercase; color:var(--accent);
+    margin-bottom:.6rem;
+  }
+  .now-playing h2 {
+    font-family:'Bebas Neue',sans-serif;
+    font-size: clamp(2rem,7vw,3.4rem);
+    line-height:.95;
+    letter-spacing:.02em;
+  }
+  .now-playing .artist {
+    color: var(--dim);
+    font-size:.78rem;
+    letter-spacing:.2em;
+    margin-top:.4rem;
+  }
+  .bars { display:flex; align-items:flex-end; gap:3px; height:26px; margin:1.2rem 0; }
+  .bars i {
+    width:3px; background:var(--ink); height:20%;
+    animation: eq .9s ease-in-out infinite;
+    animation-play-state: paused;
+  }
+  .bars.on i { animation-play-state: running; }
+  @keyframes eq { 0%,100%{height:15%} 50%{height:100%} }
+
+  .controls { display:flex; gap:.6rem; flex-wrap:wrap; }
+  .btn {
+    font-family:'Space Mono',monospace;
+    font-size:.62rem; letter-spacing:.2em;
+    text-transform:uppercase;
+    padding:.7rem 1.2rem;
+    background:transparent;
+    border:1px solid var(--line);
+    color: var(--ink);
+    cursor:pointer;
+    transition: all .25s;
+  }
+  .btn:hover { background: var(--ink); color: var(--bg); }
+  .btn.solid { background: var(--accent); border-color: var(--accent); color:#EDF4FA; }
+  .btn.solid:hover { filter: brightness(1.15); background: var(--accent); color:#EDF4FA; }
+
+  #yt { position:absolute; width:1px; height:1px; opacity:0; pointer-events:none; left:-9999px; }
+
+  /* ===== SIDE A / SIDE B ===== */
+  .sec-head {
+    max-width: 980px; margin: 4.5rem auto 1.4rem;
+    padding: 0 1.2rem;
+    display:flex; align-items:baseline; gap:1rem;
+  }
+  .sec-head h3 {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:1.5rem; letter-spacing:.28em;
+  }
+  .sec-head .rule { flex:1; height:1px; background:var(--line); }
+  .sec-head .ar {
+    font-family:'Reem Kufi',sans-serif;
+    color:var(--accent); font-size:1.1rem;
+  }
+
+  .tracks {
+    max-width:980px; margin:0 auto; padding:0 1.2rem;
+    border-top:1px solid var(--line);
+  }
+  .track {
+    display:grid;
+    grid-template-columns: 40px 1fr auto;
+    gap:1rem;
+    align-items:center;
+    padding:1rem .4rem;
+    border-bottom:1px solid var(--line);
+    cursor:pointer;
+    transition: background .25s, padding-left .25s;
+  }
+  .track:hover { background: var(--panel); padding-left:1rem; }
+  .track.active { background: var(--panel); }
+  .track .num { color:var(--dim); font-size:.7rem; }
+  .track .tt {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:1.35rem; letter-spacing:.06em;
+  }
+  .track .sub { color:var(--dim); font-size:.6rem; letter-spacing:.18em; margin-top:.15rem; }
+  .track.active .tt { color: var(--accent); }
+  .track .dur { color:var(--dim); font-size:.65rem; }
+
+  /* ===== DUALITY CARDS ===== */
+  .duality {
+    max-width:980px; margin:0 auto; padding:0 1.2rem;
+    display:grid; grid-template-columns:1fr 1fr; gap:1px;
+    background: var(--line);
+  }
+  .duality > div {
+    padding: clamp(1.6rem,5vw,2.6rem);
+    background: var(--bg);
+  }
+  .duality .ar-big {
+    font-family:'Reem Kufi',sans-serif;
+    font-size: clamp(2.4rem,9vw,4rem);
+    line-height:1;
+    margin-bottom:.8rem;
+  }
+  .duality h4 {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:1rem; letter-spacing:.3em;
+    color:var(--accent); margin-bottom:.7rem;
+  }
+  .duality p { font-size:.82rem; line-height:1.9; color:var(--dim); }
+
+  /* ===== TAPE LOOP SEQUENCER ===== */
+  .game {
+    max-width: 760px; margin: 0 auto; padding: 0 1.2rem 1rem;
+    text-align: center;
+  }
+  .game .hint { color:var(--dim); font-size:.68rem; letter-spacing:.2em; margin-bottom:1.6rem; }
+
+  .sequencer {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 1.2rem .9rem;
+    overflow-x: auto;
+  }
+
+  .seq-header {
+    display: grid;
+    grid-template-columns: 74px 1fr;
+    gap: .5rem;
+    margin-bottom: .45rem;
+    min-width: 520px;
+  }
+  .step-nums { display: grid; grid-template-columns: repeat(16, 1fr); gap: 4px; }
+  .step-nums span {
+    font-size: .48rem; color: var(--dim);
+    text-align: center;
+    font-family: 'Space Mono', monospace;
+  }
+  .step-nums span:nth-child(4n+1) { color: var(--accent); font-weight: 700; }
+
+  .tracks-grid { min-width: 520px; }
+  .track-row {
+    display: grid;
+    grid-template-columns: 74px 1fr;
+    gap: .5rem;
+    align-items: center;
+    margin-bottom: 4px;
+  }
+  .track-name {
+    text-align: left;
+    font-size: .55rem;
+    letter-spacing: .12em;
+    color: var(--dim);
+    text-transform: uppercase;
+    font-family: 'Space Mono', monospace;
+    cursor: pointer;
+    user-select: none;
+    transition: color .2s;
+  }
+  .track-name:hover { color: var(--ink); }
+  .track-name.muted { opacity: .35; text-decoration: line-through; }
+  .row-steps { display: grid; grid-template-columns: repeat(16, 1fr); gap: 4px; }
+
+  .step {
+    aspect-ratio: 1;
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background .12s, box-shadow .12s;
+  }
+  .step:nth-child(4n+1) { border-color: rgba(0,119,182,.45); }
+  .step:hover { background: var(--panel); }
+  .step.on { background: var(--accent); border-color: var(--accent); }
+  .step.cursor { box-shadow: inset 0 0 0 2px var(--accent2); }
+  .step.on.cursor { background: var(--accent2); border-color: var(--accent2); }
+
+  .seq-controls {
+    display: flex; flex-wrap: wrap;
+    align-items: center; justify-content: center;
+    gap: 1.1rem; margin-top: 1.6rem;
+  }
+  .tempo {
+    display: flex; align-items: center; gap: .55rem;
+    font-size: .58rem; letter-spacing: .2em; color: var(--dim);
+  }
+  .tempo input { width: 110px; accent-color: var(--accent); }
+  .tempo output {
+    min-width: 3ch; text-align: right;
+    color: var(--accent); font-family: 'Space Mono', monospace;
+    font-size: .7rem;
+  }
+  .ctrl-btns { display: flex; gap: .6rem; flex-wrap: wrap; justify-content: center; }
+
+  /* ===== QUOTE ===== */
+  .quote {
+    text-align:center; padding: 5rem 1.2rem;
+    max-width:700px; margin:0 auto;
+  }
+  .quote .ar {
+    font-family:'Reem Kufi',sans-serif;
+    font-size: clamp(1.5rem,6vw,2.4rem);
+    line-height:1.7;
+  }
+  .quote .tr { color:var(--dim); font-size:.8rem; margin-top:1rem; font-style:italic; }
+
+  /* ===== FOOTER ===== */
+  footer {
+    border-top:1px solid var(--line);
+    padding:2.4rem 1.2rem;
+    text-align:center;
+  }
+  footer .ar { font-family:'Reem Kufi',sans-serif; font-size:1.2rem; color:var(--accent2); }
+  footer p { font-size:.58rem; letter-spacing:.3em; color:var(--dim); margin-top:.8rem; }
+
+  /* ===== CAT EGG ===== */
+  .cat {
+    position:fixed; bottom:16px; right:16px;
+    font-size:1.4rem; opacity:.25; cursor:pointer;
+    z-index:850; transition: all .3s;
+    filter: grayscale(1);
+  }
+  .cat:hover { opacity:1; transform:scale(1.35) rotate(-12deg); filter:none; }
+  .cat-msg {
+    position:fixed; bottom:60px; right:16px;
+    background:var(--ink); color:var(--bg);
+    padding:.7rem 1rem; font-family:'Reem Kufi',sans-serif;
+    font-size:.9rem; z-index:850; display:none;
+  }
+  .cat-msg.show { display:block; }
+
+  @media (max-width:760px) {
+    .player { grid-template-columns:1fr; }
+    .vinyl-wrap { max-width:240px; margin:0 auto; }
+    .duality { grid-template-columns:1fr; }
+    .grid { grid-template-columns:repeat(5,1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+<div class="scan"></div>
+
+<!-- GATE -->
+<div class="gate" id="gate">
+  <div class="gate-ar">أبيض أسود</div>
+  <div class="gate-hint">tap</div>
+</div>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="brand">ALI</div>
+  <div class="mode-switch">
+    <button id="mAbyadh" onclick="setMode('abyadh')">ABYADH</button>
+    <button id="mAswad" class="on" onclick="setMode('aswad')">ASWAD</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>
+    <span class="split">ABYADH<span class="ghost">ABYADH</span></span>
+    <span class="split">ASWAD<span class="ghost">ASWAD</span></span>
+  </h1>
+  <div class="hero-ar">أبيض أسود</div>
+  <div class="hero-meta">ALI · ANUKARA RECORDS · 2023</div>
+</section>
+
+<div class="marquee">
+  <div class="marquee-track">
+    BLUE HOUR DRIFT <em>۞</em> ABYADH ASWAD <em>۞</em> DANCE HABIBI <em>۞</em> OCEAN REVERB <em>۞</em> BLUE HOUR DRIFT <em>۞</em> ABYADH ASWAD <em>۞</em> DANCE HABIBI <em>۞</em> OCEAN REVERB <em>۞</em>
+  </div>
+</div>
+
+<!-- PLAYER -->
+<section class="player">
+  <div class="vinyl-wrap">
+    <div class="vinyl" id="vinyl" onclick="toggle()">
+      <div class="label">أبيض<br>أسود<small>33⅓ RPM</small></div>
+    </div>
+  </div>
+  <div class="now-playing">
+    <div class="tag">now spinning</div>
+    <h2 id="npTitle">ABYADH ASWAD</h2>
+    <div class="artist" id="npSub">ALI · 2023</div>
+    <div class="bars" id="bars">
+      <i style="animation-delay:0s"></i><i style="animation-delay:.1s"></i>
+      <i style="animation-delay:.2s"></i><i style="animation-delay:.3s"></i>
+      <i style="animation-delay:.15s"></i><i style="animation-delay:.25s"></i>
+      <i style="animation-delay:.05s"></i><i style="animation-delay:.35s"></i>
+    </div>
+    <div class="controls">
+      <button class="btn solid" id="playBtn" onclick="toggle()">▶ PLAY</button>
+      <button class="btn" onclick="jump('tracks')">TRACKS</button>
+      <button class="btn" onclick="jump('game')">TAPE LOOP</button>
+    </div>
+  </div>
+</section>
+
+<div id="yt"></div>
+
+<!-- TRACKS -->
+<div class="sec-head" id="tracks">
+  <h3>SIDE A</h3><span class="ar">الوجه أ</span><div class="rule"></div>
+</div>
+<div class="tracks" id="trackList"></div>
+
+<!-- DUALITY -->
+<div class="sec-head">
+  <h3>DUALITY</h3><span class="ar">ثنائية</span><div class="rule"></div>
+</div>
+<div class="duality">
+  <div>
+    <div class="ar-big">أبيض</div>
+    <h4>ABYADH / WHITE</h4>
+    <p>Terang gurun jam dua siang. Reverb tipis, gitar bersih, udara panas yang bikin semua bayangan hilang. Sisi yang kelihatan.</p>
+  </div>
+  <div>
+    <div class="ar-big">أسود</div>
+    <h4>ASWAD / BLACK</h4>
+    <p>Malam setelah pasar tutup. Tape hiss, bass tebal, tangga nada maqam yang muter di kepala. Sisi yang cuma kedengaran.</p>
+  </div>
+</div>
+
+<!-- GAME -->
+<div class="sec-head" id="game">
+  <h3>TAPE LOOP</h3><span class="ar">شريط مغناطيسي</span><div class="rule"></div>
+</div>
+<section class="game">
+  <p class="hint">klik step untuk aktifkan · 4 track · 16 step</p>
+
+  <div class="sequencer">
+    <div class="seq-header">
+      <div class="track-label"></div>
+      <div class="step-nums">
+        <span>1</span><span>2</span><span>3</span><span>4</span>
+        <span>5</span><span>6</span><span>7</span><span>8</span>
+        <span>9</span><span>10</span><span>11</span><span>12</span>
+        <span>13</span><span>14</span><span>15</span><span>16</span>
+      </div>
+    </div>
+
+    <div class="tracks-grid" id="tracksGrid"></div>
+  </div>
+
+  <div class="seq-controls">
+    <div class="tempo">
+      <label>BPM</label>
+      <input type="range" id="tempo" min="60" max="180" value="120">
+      <output id="tempoVal">120</output>
+    </div>
+    <div class="ctrl-btns">
+      <button class="btn solid" id="seqPlay" onclick="seqToggle()">▶ PLAY</button>
+      <button class="btn" onclick="seqClear()">CLEAR</button>
+      <button class="btn" onclick="seqRandom()">RANDOM</button>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<section class="quote">
+  <div class="ar">لا لون بلا ظلّ</div>
+  <p class="tr">"Tidak ada warna tanpa bayangan"</p>
+</section>
+
+<footer>
+  <div class="ar">إلى اللقاء</div>
+  <p>ABYADH ASWAD · ALI · MADE FOR THE VIBES</p>
+</footer>
+
+<div class="cat" onclick="cat()">🐈‍⬛</div>
+<div class="cat-msg" id="catMsg">قطة سوداء 🖤</div>
+
+<script>
+/* ================= PLAYER ================= */
+const TRACKS = [
+  { id:'q68is437ug0', t:'ABYADH ASWAD',  s:'ALI · 2023',      d:'3:31' },
+  { id:'ltkF4I-0bx0', t:'DANCE, HABIBI', s:'ALI RADIO',       d:'2:54' },
+  { id:'MEvwt-6rguY', t:'BLUE LOTUS',    s:'ALI RADIO',       d:'5:07' },
+  { id:'rSvmecWiOnA', t:'DOWNTOWN STRUT',s:'ALI RADIO',       d:'4:47' },
+  { id:'9dc-sr7CN_A', t:'GRAND VOYAGE',  s:'ALI RADIO',       d:'4:36' },
+  { id:'8H_4R_AyIFc', t:'LIVE ON KEXP',  s:'FULL SESSION',    d:'30:21' }
+];
+
+let idx = 0, playing = false;
+const yt     = document.getElementById('yt');
+const vinyl  = document.getElementById('vinyl');
+const bars   = document.getElementById('bars');
+const btn    = document.getElementById('playBtn');
+
+function renderTracks() {
+  const box = document.getElementById('trackList');
+  box.innerHTML = '';
+  TRACKS.forEach((tr, i) => {
+    const row = document.createElement('div');
+    row.className = 'track' + (i === idx ? ' active' : '');
+    row.innerHTML = `<div class="num">${String(i+1).padStart(2,'0')}</div>
+      <div><div class="tt">${tr.t}</div><div class="sub">${tr.s}</div></div>
+      <div class="dur">${tr.d}</div>`;
+    row.onclick = () => load(i, true);
+    box.appendChild(row);
+  });
+}
+
+function load(i, autoplay) {
+  idx = i;
+  document.getElementById('npTitle').textContent = TRACKS[i].t;
+  document.getElementById('npSub').textContent   = TRACKS[i].s;
+  renderTracks();
+  if (autoplay) { playing = false; toggle(); } else { stop(); }
+}
+
+function play() {
+  yt.innerHTML = `<iframe src="https://www.youtube.com/embed/${TRACKS[idx].id}?autoplay=1&playsinline=1"
+    allow="autoplay" frameborder="0"></iframe>`;
+  playing = true;
+  vinyl.classList.add('playing');
+  bars.classList.add('on');
+  btn.textContent = '❚❚ PAUSE';
+}
+
+function stop() {
+  yt.innerHTML = '';
+  playing = false;
+  vinyl.classList.remove('playing');
+  bars.classList.remove('on');
+  btn.textContent = '▶ PLAY';
+}
+
+function toggle() { playing ? stop() : play(); }
+
+/* ================= GATE ================= */
+document.getElementById('gate').onclick = function () {
+  this.classList.add('gone');
+  play();
+};
+
+/* ================= MODE ================= */
+function setMode(m) {
+  document.body.classList.toggle('abyadh', m === 'abyadh');
+  document.getElementById('mAbyadh').classList.toggle('on', m === 'abyadh');
+  document.getElementById('mAswad').classList.toggle('on', m === 'aswad');
+}
+
+function jump(id) { document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
+
+/* ================= TAPE LOOP SEQUENCER ================= */
+const STEPS = 16;
+const SEQ_TRACKS = [
+  { name:'DARBUKA', type:'noise', freq: 180, dur:0.12, gain:0.55 },
+  { name:'RIQQ',    type:'metal', freq:6200, dur:0.06, gain:0.22 },
+  { name:'OUD',     type:'pluck', freq: 293.66, dur:0.55, gain:0.30 },
+  { name:'BASS',    type:'sine',  freq:  73.42, dur:0.30, gain:0.45 }
+];
+
+// pattern[track][step] = bool ; default groove
+let pattern = [
+  [1,0,0,0, 0,0,1,0, 1,0,0,0, 0,1,0,0],
+  [0,0,1,0, 0,0,1,0, 0,0,1,0, 0,0,1,1],
+  [1,0,0,0, 1,0,0,1, 0,0,1,0, 1,0,0,0],
+  [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,1,0]
+];
+let muted   = [false,false,false,false];
+let seqOn   = false;
+let curStep = 0;
+let bpm     = 120;
+let timer   = null;
+let actx    = null;
+
+function ac() {
+  if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+  if (actx.state === 'suspended') actx.resume();
+  return actx;
+}
+
+/* --- synth voices, all generated (no samples) --- */
+function voice(cfg) {
+  const c = ac(), t = c.currentTime;
+  const out = c.createGain();
+  out.gain.value = cfg.gain;
+  out.connect(c.destination);
+
+  if (cfg.type === 'noise' || cfg.type === 'metal') {
+    const len = Math.floor(c.sampleRate * cfg.dur);
+    const buf = c.createBuffer(1, len, c.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) {
+      d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, cfg.type === 'metal' ? 1.6 : 3);
+    }
+    const src = c.createBufferSource();
+    src.buffer = buf;
+    const flt = c.createBiquadFilter();
+    flt.type = cfg.type === 'metal' ? 'highpass' : 'lowpass';
+    flt.frequency.value = cfg.freq;
+    flt.Q.value = cfg.type === 'metal' ? 1 : 4;
+    src.connect(flt).connect(out);
+    src.start(t);
+    src.stop(t + cfg.dur);
+    if (cfg.type === 'noise') {
+      // add body thump
+      const o = c.createOscillator(), g = c.createGain();
+      o.type = 'sine';
+      o.frequency.setValueAtTime(cfg.freq, t);
+      o.frequency.exponentialRampToValueAtTime(52, t + cfg.dur);
+      g.gain.setValueAtTime(cfg.gain, t);
+      g.gain.exponentialRampToValueAtTime(0.001, t + cfg.dur);
+      o.connect(g).connect(c.destination);
+      o.start(t); o.stop(t + cfg.dur);
+    }
+  } else {
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = cfg.type === 'pluck' ? 'triangle' : 'sine';
+    o.frequency.value = cfg.freq;
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(cfg.gain, t + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.001, t + cfg.dur);
+    if (cfg.type === 'pluck') {
+      const flt = c.createBiquadFilter();
+      flt.type = 'lowpass';
+      flt.frequency.setValueAtTime(2400, t);
+      flt.frequency.exponentialRampToValueAtTime(700, t + cfg.dur);
+      o.connect(flt).connect(g).connect(out);
+    } else {
+      o.connect(g).connect(out);
+    }
+    o.start(t); o.stop(t + cfg.dur + 0.02);
+  }
+}
+
+function buildSeq() {
+  const box = document.getElementById('tracksGrid');
+  box.innerHTML = '';
+  SEQ_TRACKS.forEach((tr, ti) => {
+    const row = document.createElement('div');
+    row.className = 'track-row';
+
+    const nm = document.createElement('div');
+    nm.className = 'track-name' + (muted[ti] ? ' muted' : '');
+    nm.textContent = tr.name;
+    nm.title = 'klik untuk mute';
+    nm.onclick = () => { muted[ti] = !muted[ti]; buildSeq(); };
+    row.appendChild(nm);
+
+    const steps = document.createElement('div');
+    steps.className = 'row-steps';
+    for (let s = 0; s < STEPS; s++) {
+      const cell = document.createElement('div');
+      cell.className = 'step' + (pattern[ti][s] ? ' on' : '');
+      cell.dataset.t = ti; cell.dataset.s = s;
+      cell.onclick = () => {
+        pattern[ti][s] = pattern[ti][s] ? 0 : 1;
+        cell.classList.toggle('on');
+        if (pattern[ti][s] && !muted[ti]) voice(SEQ_TRACKS[ti]);
+      };
+      steps.appendChild(cell);
+    }
+    row.appendChild(steps);
+    box.appendChild(row);
+  });
+}
+
+function tick() {
+  document.querySelectorAll('.step.cursor').forEach(e => e.classList.remove('cursor'));
+  SEQ_TRACKS.forEach((tr, ti) => {
+    const cell = document.querySelector(`.step[data-t="${ti}"][data-s="${curStep}"]`);
+    if (cell) cell.classList.add('cursor');
+    if (pattern[ti][curStep] && !muted[ti]) voice(tr);
+  });
+  curStep = (curStep + 1) % STEPS;
+}
+
+function seqToggle() {
+  const b = document.getElementById('seqPlay');
+  if (seqOn) {
+    clearInterval(timer); timer = null; seqOn = false;
+    document.querySelectorAll('.step.cursor').forEach(e => e.classList.remove('cursor'));
+    b.textContent = '▶ PLAY';
+  } else {
+    ac();
+    seqOn = true; curStep = 0;
+    tick();
+    timer = setInterval(tick, (60 / bpm / 4) * 1000);
+    b.textContent = '❚❚ STOP';
+  }
+}
+
+function seqClear() {
+  pattern = pattern.map(r => r.map(() => 0));
+  buildSeq();
+}
+
+function seqRandom() {
+  const density = [0.28, 0.30, 0.22, 0.18];
+  pattern = pattern.map((r, i) => r.map(() => Math.random() < density[i] ? 1 : 0));
+  // guarantee a downbeat
+  pattern[0][0] = 1; pattern[3][0] = 1;
+  buildSeq();
+}
+
+document.getElementById('tempo').oninput = function () {
+  bpm = +this.value;
+  document.getElementById('tempoVal').value = bpm;
+  if (seqOn) {
+    clearInterval(timer);
+    timer = setInterval(tick, (60 / bpm / 4) * 1000);
+  }
+};
+
+/* ================= EGG ================= */
+function cat() {
+  const m = document.getElementById('catMsg');
+  m.classList.add('show');
+  setTimeout(() => m.classList.remove('show'), 2500);
+}
+
+/* ================= INIT ================= */
+renderTracks();
+buildSeq();
+console.log('%cأبيض أسود — ALI', 'font-size:16px');
+console.log('hint: ada kucing hitam di pojok kanan bawah');
+</script>
+</body>
+</html>
